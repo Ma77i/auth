@@ -1,0 +1,22 @@
+<div class="container mx">
+
+    <h2>Loguearse</h2>
+    <form method="post" class="m-4">
+
+        <h3>¿No tienes cuenta? <a href="/register"><strong>Registrate</strong></a></h3>
+            <strong>Ingrese a su cuenta</strong>
+            {{> formErr }}
+        <div class="input-group">
+            <label for="email" class="input-group-text"> Mail </label>
+            <input name="email" placeholder="Mail" class="form-control" required>
+        </div>
+        <div class="input-group">
+            <label for="password" class="input-group-text"> Contraseña </label>
+            <input name="password" placeholder="Password" class="form-control" required>
+        </div>
+        <div class="col-12">
+            <button class="btn btn-primary" type="submit"> Submit </button>
+        </div>
+    </form>
+
+</div>
