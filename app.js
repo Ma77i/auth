@@ -8,6 +8,15 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 
 
+//passport
+const passport = require('passport')
+const flash = require('express-flash')
+const initializePassport = require('./passport/local')
+
+// initialize Passport
+initializePassport(passport)
+
+
 // session store
 const MongoStore = require("connect-mongo")
 const { mongoConfig } = require("./config")
@@ -33,6 +42,7 @@ mongoose.connect(`${SCHEMA}://${USER}:${PASSWORD}@${HOSTNAME}/${DATABASE}?${OPTI
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
     app.use("/static", express.static(path.join(__dirname, "public")))
+    app.use(flash())
     app.use(cookieParser("This is a secret"))
     app.use(session({
         secret: "secret",
@@ -52,12 +62,16 @@ mongoose.connect(`${SCHEMA}://${USER}:${PASSWORD}@${HOSTNAME}/${DATABASE}?${OPTI
         //     retires: 0
         // })
     }))
+
+
+    app.use(passport.initialize())
+    app.use(passport.session())
     
     
     
     // Socket connection
     io.on('connection', async (socket) => {
-        console.log((`an user connected ${socket.id}`))
+        //console.log((`an user connected ${socket.id}`))
         
         //obtengo los productos y los envio por socket emit
         const list = await prodModel.getAll()

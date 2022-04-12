@@ -8,42 +8,60 @@ const router = new Router()
 const auth = require('../middlewares/auth')
 
 // controllers
-const { loginUser, registerUser } = require('../controllers/user.controller')
+//const { loginUser, registerUser } = require('../controllers/user.controller')
 const controller = require("../controllers/products.js")
-const Contenedor = require(path.join(__dirname, "../models/contenedor.js"));
-const products = new Contenedor(path.join(__dirname, "../database/data.json"))
+
+// passport
+const passport = require('passport')
 
 
 // GET Main
 router.get('/', auth, (req, res) => {
-    const { name } = req.session.user
-    res.render('main', {name})
+    const { firstName } = req.user
+    res.render('main', { firstName })
 })
 
 // GET Login
 router.get('/login', (req, res) => res.render('login'))
 
+
 // POST Login
-router.post("/login", loginUser)
+//router.post('/login', loginUser)
+router.post("/login", passport.authenticate("login", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true
+}))
 
 // GET Register
 router.get('/register', (req, res) => res.render('register'))
 
 // POST Register
-router.post("/register", registerUser)
+router.post("/register",
+    passport.authenticate("register", {
+        successRedirect: "/",
+        failureRedirect: "/register",
+        failureFlash: true
+    })
+)
 
 
 router.get('/logout', auth, (req, res) => {
-    const { name } = req.session.user
-    req.session.destroy((err) => {
-        if(err) {
-            console.log(err);
-            res.send(err)
-            return
-        }
-    })
-    res.render('logout', {name})
-}) 
+    const { firstName } = req.user
+    console.log(firstName);
+
+    req.logOut()
+    res.render("logout", { firstName })
+    // const { name } = req.session.user
+    // req.session.destroy((err) => {
+    //     if (err) {
+    //         console.log(err);
+    //         res.send(err)
+    //         return
+    //     }
+    // })
+    // res.render('logout', { name })
+})
 
 //guardo los datos agregados desde el formulario con method=post para mongo
 router.post("", controller.post)

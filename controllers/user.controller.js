@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 // import models
 const User = require("../models/userModel");
 
-exports.loginUser = async (req, res) => {
+/* exports.loginUser = async (req, res) => {
     const { email, password } = req.body
     console.log(email, password);
     try {
@@ -15,17 +15,17 @@ exports.loginUser = async (req, res) => {
             })
         }
         const user = await User.findOne({ email })
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            console.log("Credentials are invalid");
-            return res.render("login", { err: "Contraseña o usuario incorrecto" })
+
+        if (password !== user.password) {
+            console.log("Credentials are invalid, Password: ", isPasswordValid, "User: ", user);
+            return res.render("login", { err: "Contraseña incorrecta" })
         }
         req.session.user = {
             id: user._id,
             name: user.userName,
             email: user.email
         }
-        res.render("main")
+        res.redirect("/")
     } catch (error) {
         console.log("CATCH:", error);
         res.status(500).send(error)
@@ -48,7 +48,7 @@ exports.registerUser = async (req, res) => {
         console.log(err)
         res.status(500).send(err)
     }
-}
+} */
 
 exports.getAllUsers = async (req, res) => {
     const users = await User.find()
